@@ -15,12 +15,20 @@ import pkg from 'node-cron';
 import { randomUUID } from 'crypto';
 const { schedule } = pkg;
 
+
+// flags
+const sendQuestionNow = process.argv.includes('now');
+const printDebugLogs = process.argv.includes('debug');
+
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
 	console.log('Ready!');
+  if(sendQuestionNow) {
+    dailyRoutine();
+  }
   schedule('0 17 * * *', function() {
     dailyRoutine();
   });
@@ -39,6 +47,11 @@ client.login(process.env.DISCORD_TOKEN);
 async function dailyRoutine() {
   const channels = await getChannels();
   const question = await getRandomQuestion();
+  console.log(`Today's question: ${question}`);
+  if(question === undefined) {
+    console.error(`oops, no question...`)
+    return;
+  }
   for(const channel of channels) {
     await sendMessageToChannel(channel, buildMessage(question));
   }
@@ -61,6 +74,9 @@ async function getRandomQuestion() {
   };
   try {
     const data = await ddbDocClient.send(new ScanCommand(params));
+    if(printDebugLogs) {
+      console.log(data);
+    }
     return data.Items[0];
   } catch (err) {
     console.error(err);
