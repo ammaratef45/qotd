@@ -60,7 +60,7 @@ async function dailyRoutine() {
 function buildMessage(question) {
   return `Question of the day:\n`+
         `${question.question}\n\n`+
-        `Question was added by: @${question.user}\n`+
+        `Question was added by: <@${question.user}>\n`+
         `use slash commadn add-question to add a question to my database`;
 }
 

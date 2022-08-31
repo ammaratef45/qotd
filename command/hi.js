@@ -9,6 +9,6 @@ export class Hi extends Command {
     type: 1
   }
   async buildResponse() {
-    return `Hello there..`;
+    return `Hello there.. <@${this.interaction.user.id}>`;
   }
 }

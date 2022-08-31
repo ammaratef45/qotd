@@ -14,7 +14,7 @@ export class AddQuestionCommand extends Command {
   async buildResponse() {
     const question = this.interaction.options.getString('question');
     const uuid = randomUUID();
-    const user =  `${this.interaction.user.username}#${this.interaction.user.discriminator}`;
+    const user =  this.interaction.user.id;
     const params = {
       TableName: "QOTD_questions",
       Item: {
@@ -23,9 +23,9 @@ export class AddQuestionCommand extends Command {
         question: question
       },
     };
-    var res = `sorry ${user}, I failed to add the question to my database`;
+    var res = `sorry <@${user}>, I failed to add the question to my database`;
     if(await this.addQuestion(params)) {
-      res = `${user} added a new question to my database`;
+      res = `<@${user}> added a new question to my database`;
     }
     return res;
   }
