@@ -1,10 +1,6 @@
 /**
  * TODO:
  *  - add a command to remove channel
- *  - add a scheduler to post questions
- * Sync:
-rsync -azvv --progress -e "ssh -i wordpressKey.pem" . \
-ec2-user@ec2-34-229-13-222.compute-1.amazonaws.com:~/QOTD
  */
 import 'dotenv/config';
 import { CommandFactory } from './command/factory.js';
