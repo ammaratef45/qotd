@@ -21,7 +21,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
-	console.log('Ready!');
+	log('Ready!');
   if(sendQuestionNow) {
     dailyRoutine();
   }
@@ -33,6 +33,7 @@ client.once('ready', () => {
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isChatInputCommand()) return;
 	const { commandName } = interaction;
+  log(`command: ${commandName}`);
   var command = CommandFactory.createCommand(commandName, interaction);
   await command.respond();
 });
@@ -43,9 +44,9 @@ client.login(process.env.DISCORD_TOKEN);
 async function dailyRoutine() {
   const channels = await getChannels();
   const question = await getRandomQuestion();
-  console.log(`Today's question: ${question}`);
+  log(`Today's question: ${question.question}`);
   if(question === undefined) {
-    console.error(`oops, no question...`)
+    error(`oops, no question...`)
     return;
   }
   for(const channel of channels) {
@@ -71,11 +72,11 @@ async function getRandomQuestion() {
   try {
     const data = await ddbDocClient.send(new ScanCommand(params));
     if(printDebugLogs) {
-      console.log(data);
+      log(data);
     }
     return data.Items[0];
   } catch (err) {
-    console.error(err);
+    error(err);
   }
 }
 
@@ -88,11 +89,23 @@ async function getChannels() {
     const values = data.Items.map(x=> x.channel);
     return values;
   } catch (err) {
-    console.error(err);
+    error(err);
   }
 }
 
 async function sendMessageToChannel(channel_id, message) {
   const channel = await client.channels.fetch(channel_id);
   channel.send(message);  
+}
+
+function log(value) {
+  console.log(`${nowString()}: ${value}`);
+}
+
+function error(value) {
+  console.error(`${nowString()}: ${value}`);
+}
+
+function nowString() {
+  return (new Date()).toUTCString();
 }
