@@ -44,11 +44,11 @@ client.login(process.env.DISCORD_TOKEN);
 async function dailyRoutine() {
   const channels = await getChannels();
   const question = await getRandomQuestion();
-  log(`Today's question: ${question.question}`);
   if(question === undefined) {
     error(`oops, no question...`)
     return;
   }
+  log(`Today's question: ${question.question}`);
   for(const channel of channels) {
     await sendMessageToChannel(channel, buildMessage(question));
   }
